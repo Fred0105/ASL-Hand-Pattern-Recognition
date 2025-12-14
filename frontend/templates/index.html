@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Real-time American Sign Language (ASL) alphabet recognition using Computer Vision and Deep Learning. Translate hand gestures to text instantly.">
+    <meta name="keywords"
+        content="ASL, sign language, computer vision, hand gesture recognition, MediaPipe, deep learning">
+    <title>ASL Gesture Recognition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤟</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="logo">ASL<span class="highlight">Vision</span></div>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Speak With Your <span class="gradient-text">Hands</span></h1>
+            <p class="hero-subtitle">Real-time American Sign Language recognition powered by advanced Computer Vision
+                and Deep Learning.</p>
+            <a href="{{ url_for('camera') }}" class="cta-button">Start Recognition</a>
+        </div>
+    </section>
+
+    <section id="what-is-asl" class="about-section">
+        <h2 class="section-title reveal">What is ASL?</h2>
+        <div class="glass-card full-width reveal">
+            <h3>American Sign Language</h3>
+            <p>American Sign Language (ASL) is a complete, natural language that has the same linguistic properties as
+                spoken languages, with grammar that differs from English. ASL is expressed by movements of the hands and
+                face. It is the primary language of many North Americans who are deaf and hard of hearing and is used by
+                some hearing people as well.</p>
+            <br>
+            <p>There is no universal sign language. Different sign languages are used in different countries or regions.
+                For example, British Sign Language (BSL) is a different language from ASL, and Americans who know ASL
+                may not understand BSL.</p>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <h2 class="section-title">About The Project</h2>
+        <div class="cards-container">
+            <div class="glass-card">
+                <h3>Computer Vision</h3>
+                <p>Utilizing MediaPipe for precise hand landmark detection in real-time.</p>
+            </div>
+            <div class="glass-card">
+                <h3>Deep Learning</h3>
+                <p>A custom Neural Network trained to classify gestures with high accuracy.</p>
+            </div>
+            <div class="glass-card">
+                <h3>Real-Time</h3>
+                <p>Instant feedback allows for seamless interaction and learning.</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run ASL App",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/frontend/app.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/frontend",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "justMyCode": false
+        }
+    ]
+}

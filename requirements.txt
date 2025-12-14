@@ -1,0 +1,18 @@
+# Core dependencies
+opencv-python>=4.5.0
+numpy>=1.19.0
+scikit-learn>=0.24.0
+joblib>=1.0.0
+mediapipe>=0.10.0
+tqdm>=4.62.0
+
+# Web Framework
+flask>=2.0.0
+
+# Visualization
+seaborn>=0.11.0
+matplotlib>=3.3.0
+
+# Jupyter Notebook (optional - untuk training interaktif)
+jupyter>=1.0.0
+ipykernel>=6.0.0

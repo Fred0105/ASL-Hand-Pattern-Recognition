@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Live ASL alphabet recognition camera - Real-time hand gesture detection and translation">
+    <title>ASL Recognition - Live Camera</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤟</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="logo">ASL<span class="highlight">Vision</span></div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+        </div>
+    </nav>
+
+    <div class="camera-page-container">
+        <div class="camera-layout">
+            <!-- Left Side: Camera Feed -->
+            <div class="camera-section">
+                <div class="camera-header">
+                    <h2>Live Detection</h2>
+                    <a href="#" onclick="stopCamera(); return false;" class="icon-button">✕</a>
+                </div>
+                <div class="video-wrapper">
+                    <img id="video-feed" src="{{ url_for('video_feed') }}"
+                        alt="Live camera feed showing hand gesture recognition with MediaPipe landmarks">
+                </div>
+            </div>
+
+            <!-- Right Side: Sentence & Controls -->
+            <div class="info-section">
+                <!-- Current Prediction Stats -->
+                <div class="stats-card">
+                    <h3>Current Detection</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Letter:</span>
+                        <span class="stat-value" id="current-letter">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Confidence:</span>
+                        <span class="stat-value" id="confidence-value">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Match:</span>
+                        <div class="match-bar-container">
+                            <div class="match-bar" id="match-bar"></div>
+                            <span class="match-percentage" id="match-percentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentence Display -->
+                <div class="sentence-card">
+                    <h3>Sentence</h3>
+                    <div class="sentence-content" id="sentence-text">(empty)</div>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls-card">
+                    <h3>Controls</h3>
+                    <div class="controls-grid">
+                        <button class="control-btn" onclick="addSpace()">
+                            <span class="btn-icon">⎵</span>
+                            Add Space
+                        </button>
+                        <button class="control-btn" onclick="deleteLast()">
+                            <span class="btn-icon">⌫</span>
+                            Delete Last
+                        </button>
+                        <button class="control-btn reset-btn" onclick="resetSentence()">
+                            <span class="btn-icon">↻</span>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentConfidence = 0;
+        let currentLetter = '';
+
+        function addSpace() {
+            fetch('/add_space')
+                .then(response => response.json())
+                .then(data => {
+                    updateSentence(data.sentence);
+                });
+        }
+
+        function deleteLast() {
+            fetch('/delete_last')
+                .then(response => response.json())
+                .then(data => {
+                    updateSentence(data.sentence);
+                });
+        }
+
+        function resetSentence() {
+            fetch('/reset_sentence')
+                .then(response => response.json())
+                .then(() => {
+                    updateSentence('');
+                });
+        }
+
+        function updateSentence(sentence) {
+            const sentenceEl = document.getElementById('sentence-text');
+            sentenceEl.textContent = sentence || '(empty)';
+        }
+
+        function updateStats(data) {
+            // Update letter
+            const letterEl = document.getElementById('current-letter');
+            letterEl.textContent = data.letter || '-';
+
+            // Update confidence
+            const confidenceEl = document.getElementById('confidence-value');
+            const confidence = Math.round(data.confidence || 0);
+            confidenceEl.textContent = confidence + '%';
+
+            // Update match bar
+            const matchBar = document.getElementById('match-bar');
+            const matchPercentage = document.getElementById('match-percentage');
+            const match = Math.round(data.match || 0);
+            matchBar.style.width = match + '%';
+            matchPercentage.textContent = match + '%';
+
+            // Color coding
+            if (match >= 70) {
+                matchBar.className = 'match-bar high';
+            } else if (match >= 40) {
+                matchBar.className = 'match-bar medium';
+            } else {
+                matchBar.className = 'match-bar low';
+            }
+        }
+
+        // Update sentence and stats periodically
+        setInterval(() => {
+            fetch('/get_stats')
+                .then(response => response.json())
+                .then(data => {
+                    updateSentence(data.sentence);
+                    updateStats(data);
+                })
+                .catch(err => console.error('Error fetching stats:', err));
+        }, 200); // Update 5 times per second for smooth progress
+
+        // Stop camera and navigate to home
+        function stopCamera() {
+            const videoFeed = document.getElementById('video-feed');
+            if (videoFeed) {
+                // Stop the video stream by setting src to empty
+                videoFeed.src = '';
+
+                // Stop any media streams if accessible
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(stream => {
+                            stream.getTracks().forEach(track => track.stop());
+                        })
+                        .catch(err => console.log('No active stream to stop'));
+                }
+            }
+
+            // Navigate to home after a short delay
+            setTimeout(() => {
+                window.location.href = "{{ url_for('index') }}";
+            }, 100);
+        }
+
+        // Also stop camera when page is about to unload
+        window.addEventListener('beforeunload', () => {
+            const videoFeed = document.getElementById('video-feed');
+            if (videoFeed) {
+                videoFeed.src = '';
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
