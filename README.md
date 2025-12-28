@@ -31,10 +31,10 @@ cd frontend
 Wait until you see:
 ```
 ✅ Models loaded successfully!
- * Running on http://0.0.0.0:5000
+ * Running on http://0.0.0.0:5001
 ```
 
-Then open your browser and go to: **http://localhost:5000**
+Then open your browser and go to: **http://localhost:5001**
 
 ---
 
