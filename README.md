@@ -9,7 +9,6 @@ Real-time ASL alphabet recognition using MediaPipe Hand Landmarks and an SVM cla
 ### **1. Install Dependencies**
 
 ```bash
-cd "d:\SEM 5\CompVis\Another Final Project - ASL\ComputerVision"
 pip install -r requirements.txt
 ```
 
